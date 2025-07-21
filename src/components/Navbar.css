@@ -1,25 +1,15 @@
 .navbar {
     background: linear-gradient(135deg, #FDD835 25%, #FFD700 50%, #001F3F 30%, #002D62 70%) !important;
     color: rgba(255, 255, 255, 0.8) !important;
-    width: 82%;
+    width: 100%;
     margin: auto;
     border-radius: 4px;
     top: 0;
     width: 100% !important;
     z-index: 1050;
+    position: fixed;
 }
 
-.navbar-narrow {
-  width: 82%!important;
-  margin: auto!important;
-  top: 8px;
-}
-
-.navbar-full {
-  width: 100%!important;
-  margin: auto!important;
-  position: fixed;
-}
 
 .carousel {
   width: 85%!important;
@@ -59,32 +49,41 @@
 
 .dropbtn {
   cursor: pointer;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 1rem;
 }
 
 .dropdown-content {
-  display: none;
   position: absolute;
-  background-color: white;
-  min-width: 180px;
-  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-  z-index: 1;
-  top: 100%;
+  top: 110%;
   left: 0;
+  background-color: white;
+  color: #333;
+  min-width: 180px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+  z-index: 999;
+}
+
+.dropdown:hover .dropdown-content {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .dropdown-content a {
-  color: #003366;
-  padding: 12px 16px;
-  text-decoration: none;
+  padding: 0.75rem 1rem;
   display: block;
+  text-decoration: none;
+  color: #333;
+  transition: background 0.2s;
 }
 
 .dropdown-content a:hover {
   background-color: #f0f0f0;
 }
 
-.dropdown:hover .dropdown-content {
-  display: block;
-}

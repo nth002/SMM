@@ -66,7 +66,7 @@ body {
 
 .nav-link.active-link {
   font-weight: bold;
-  background-color: #000000;
+  background-color: #003d89;
   border-radius: 4px;
 }
 .collapse {
@@ -89,4 +89,8 @@ body {
 .collapse-submenu {
   transition: height 0.35s ease;
   overflow: hidden;
+}
+
+.sidebarMain {
+  background: linear-gradient(#001F3F 30%30%, #002D62 70%) !important;
 }

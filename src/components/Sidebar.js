@@ -46,13 +46,13 @@ const Sidebar = () => {
 
   return (
     <div
-      className="bg-dark text-white p-4"
-      style={{ width: '250px', height: '100%', minHeight: '100vh' }}
+      className="text-white sidebarMain p-4"
+      style={{ width: '250px', height: '100%', minHeight: '100vh'}}
     >
       <ul className="nav flex-column">
 
         {/* Dashboard */}
-        <li className="nav-item" style={{ marginLeft: "-1rem", paddingTop: "3.5rem" }} >
+        <li className="nav-item" style={{ marginLeft: "-1rem", paddingTop: "0rem" }} >
           <NavLink to="/dashboard" end className={getActiveClass}>
             <Dot />
             Dashboard

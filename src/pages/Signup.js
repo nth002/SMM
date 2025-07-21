@@ -1,91 +1,67 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SignUp.css";
+import signupImg from "../assets/images/aboutUs.jpg";
+import Loader from "../components/Loader";
 
-const SignUp = () => {
+const Signup = () => {
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true); // loader on initial load
+  const [formSubmitting, setFormSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    organization: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    // simulate page load delay
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("⚠️ Passwords do not match");
+    if (!password) {
+      setError("⚠️ Please enter both email and password.");
       return;
     }
+    setError("");
+    setFormSubmitting(true);
 
-    alert("✅ Sign Up successful!");
-    // Call your API here
-    navigate("/login");
+    setTimeout(() => {
+      setFormSubmitting(false);
+      navigate("/dashboard");
+    }, 2000); // simulate API delay
   };
 
+  if (loading || formSubmitting) return <Loader />;
+
   return (
-    <div className="signup-container">
+    <div className="signup-wrapper">
       <div className="signup-card">
-        <h2 className="signup-title">Create Your Account</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-row">
+        <div className="signup-left">
+          <h3 className="signup-title">Sign Up</h3>
+          {error && <div className="error-msg">{error}</div>}
+          <form onSubmit={handleSubmit}>
+            <div  className="form-row">
             <div className="form-group">
-              <label htmlFor="fullName">Full Name</label>
-              <input
-                type="text"
-                id="fullName"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                required
-                placeholder="John Doe"
-              />
+              <label htmlFor="name">Name</label>
+              <input type="text" id="name" placeholder="Enter your name" />
             </div>
             <div className="form-group">
-              <label htmlFor="organization">Organization</label>
-              <input
-                type="text"
-                id="organization"
-                name="organization"
-                value={formData.organization}
-                onChange={handleChange}
-                required
-                placeholder="Jagannath GPT"
-              />
+              <label htmlFor="email">Email</label>
+              <input type="email" id="email" placeholder="Enter your email" />
             </div>
           </div>
 
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="email">Email Address</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="email@example.com"
-              />
+              <label htmlFor="number">Number</label>
+              <input type="number" id="number" placeholder="Enter your Number" />
             </div>
             <div className="form-group">
-              <label htmlFor="phone">Phone Number</label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-                placeholder="123-456-7890"
-              />
+              <label htmlFor="org">Organization</label>
+              <input type="text" id="org" placeholder="Enter your Org.." />
             </div>
           </div>
 
@@ -95,12 +71,9 @@ const SignUp = () => {
               <input
                 type="password"
                 id="password"
-                name="password"
-                minLength={6}
-                value={formData.password}
-                onChange={handleChange}
-                required
-                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
               />
             </div>
             <div className="form-group">
@@ -108,28 +81,33 @@ const SignUp = () => {
               <input
                 type="password"
                 id="confirmPassword"
-                name="confirmPassword"
-                minLength={6}
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                placeholder="••••••••"
+                placeholder="Re-enter password"
               />
             </div>
           </div>
+          
 
-          <button type="submit" className="btn-signup">
-            Sign Up
-          </button>
+          <button type="submit" className="btn-signup">Signup</button>
+          </form>
+          <div className="signup-footer">
+            <p>Already have an account?{" "}
+              <a href="/login" className="login-link">Login</a>
+            </p>
+          </div>
 
-          <p className="login-link">
-            Already have an account?{" "}
-            <span onClick={() => navigate("/login")}>Login here</span>
-          </p>
-        </form>
+        </div>
+
+        <div className="signup-right">
+          <div className="tilted-overlay"></div>
+          <img
+            src={signupImg}
+            alt="signup Visual"
+            className="signup-image"
+          />
+        </div>
       </div>
     </div>
   );
 };
 
-export default SignUp;
+export default Signup;
