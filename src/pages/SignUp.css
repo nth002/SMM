@@ -1,0 +1,126 @@
+.signup-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0f111a, #161b2a);
+  color: #e0e6f1;
+  font-family: 'Inter', sans-serif;
+  padding: 1rem;
+}
+
+.signup-card {
+  background-color: #1a1f38;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 650px;
+  box-shadow: 0 0 20px #00ffea55;
+}
+
+.signup-title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+  background: linear-gradient(90deg, #3e92ff, #00ffea);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: glow 3s ease-in-out infinite alternate;
+}
+
+/* Two-column layout */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #a0adcc;
+}
+
+.form-group input {
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #11152a;
+  color: #e0e6f1;
+  font-size: 1rem;
+  box-shadow: inset 0 0 6px #001e25;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.form-group input::placeholder {
+  color: #667394;
+}
+
+.form-group input:focus {
+  outline: none;
+  background-color: #16203f;
+  box-shadow: 0 0 10px #00ffea;
+}
+
+/* Submit button */
+.btn-signup {
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 1rem;
+  background: #00ffea;
+  color: #0f111a;
+  border: none;
+  border-radius: 9999px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 12px #00ffeaaa;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-signup:hover {
+  background: #00ccbe;
+  box-shadow: 0 0 20px #00ccbecc;
+}
+
+/* Back to login link */
+.login-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #a0adcc;
+}
+.login-link span {
+  color: #00ffea;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.login-link span:hover {
+  color: #3e92ff;
+}
+
+/* Glow animation */
+@keyframes glow {
+  from {
+    filter: drop-shadow(0 0 8px #3e92ffaa);
+  }
+  to {
+    filter: drop-shadow(0 0 20px #00ffeaee);
+  }
+}
+
+/* Responsive behavior */
+@media (max-width: 576px) {
+  .form-row {
+    flex-direction: column;
+  }
+}
