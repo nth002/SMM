@@ -3,9 +3,9 @@ import Navbar from "../components/Navbar";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "./LandingPage.css";
-import carousel1 from "../assets/images/carousel1.jpg";
-import carousel2 from "../assets/images/carousel2.jpg";
-import carousel3 from "../assets/images/carousel3.jpg";
+import carousel1 from "../assets/images/smmHome.jpg";
+import carousel2 from "../assets/images/smmHome.jpg";
+import carousel3 from "../assets/images/smmHome.jpg";
 import aboutus from "../assets/images/aboutUs.jpg";
 import Loader from "../components/Loader";
 
@@ -42,12 +42,14 @@ const LandingPage = () => {
           className="hero-carousel"
         >
           {images.map(({ src, alt }, idx) => (
-            <div key={idx}>
-              <img src={src} alt={alt} />
+            <div className="image-wrapper" key={idx}>
+              <img src={src} alt={alt} className="carousel-image" />
+              <div className="overlay"></div> {/* This is your background overlay */}
             </div>
           ))}
         </Carousel>
       </main>
+
 
       <section className="features">
         <div className="feature">

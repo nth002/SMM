@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { FiLogIn, FiChevronDown  } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
-import logo from "../assets/images/masloclogo.png";
+import logo from "../assets/images/Logo.png";
 
 const Navbar = () => {
   const navigate = useNavigate();

@@ -6,7 +6,6 @@ import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
-import NpaAssetList from "./pages/NPA/npaAssetsList";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout"; 
@@ -30,7 +29,6 @@ function App() {
         >
           
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/NPA/assets" element={<NpaAssetList />} />
         </Route>
       </Routes>
     </Router>

@@ -1,118 +1,98 @@
-import React from "react";
-import { Card, Row, Col, Breadcrumb } from "react-bootstrap";
-import { Pie, Line, Bar, Doughnut, Radar } from "react-chartjs-2";
-import {
-  FaUsers,
-  FaShoppingCart,
-  FaDollarSign,
-  FaComments,
-} from "react-icons/fa";
-
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
-  RadialLinearScale,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
-  RadialLinearScale,
-  Tooltip,
-  Legend
-);
+import React, { useState } from "react";
+import { Card, Row, Col, Breadcrumb, Form } from "react-bootstrap";
 
 const Dashboard = () => {
-  const cardData = [
-    { title: "Users", count: 1234, icon: <FaUsers /> },
-    { title: "Orders", count: 567, icon: <FaShoppingCart /> },
-    { title: "Revenue", count: "$12,345", icon: <FaDollarSign /> },
-    { title: "Feedbacks", count: 89, icon: <FaComments /> },
+  // 1st select options
+  const firstOptions = [
+    { value: "", label: "Select Social Side" },
+    { value: "facebook", label: "Facebook" },
+    { value: "twitter", label: "Twitter" },
+    { value: "instagram", label: "Instagram" },
   ];
 
-  const lineData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Sales",
-        data: [33, 53, 85, 41, 44, 65],
-        fill: false,
-        backgroundColor: "rgba(0, 255, 255, 1)",
-        borderColor: "rgba(46, 144, 144, 1)",
-      },
+  // 2nd select options depending on first select
+  const secondOptionsMap = {
+    facebook: [
+      { value: "", label: "Select Facebook Category" },
+      { value: "posts", label: "Posts" },
+      { value: "friends", label: "Friends" },
+    ],
+    twitter: [
+      { value: "", label: "Select Twitter Category" },
+      { value: "tweets", label: "Tweets" },
+      { value: "followers", label: "Followers" },
+    ],
+    instagram: [
+      { value: "", label: "Select Instagram Category" },
+      { value: "photos", label: "Photos" },
+      { value: "stories", label: "Stories" },
     ],
   };
 
-  const pieData = {
-    labels: ["Red", "Blue", "Yellow"],
-    datasets: [
-      {
-        label: "Votes",
-        data: [12, 19, 7],
-        backgroundColor: [
-          "rgba(255, 99, 133, 1)",
-          "rgba(54, 163, 235, 1)",
-          "rgba(255, 207, 86, 1)",
-        ],
-        borderWidth: 1,
-      },
-    ],
+  // 3rd div info based on 2nd select
+  const infoMap = {
+    posts: {
+      title: "Facebook Posts",
+      description:
+        "Posts are the content you share on Facebook that your friends and followers see.",
+      items: ["Text posts", "Image posts", "Video posts", "Event posts"],
+    },
+    friends: {
+      title: "Facebook Friends",
+      description:
+        "Friends are people you've connected with on Facebook to share updates.",
+      items: ["Close friends", "Family", "Work colleagues", "Acquaintances"],
+    },
+    tweets: {
+      title: "Twitter Tweets",
+      description: "Tweets are short messages you post on Twitter.",
+      items: ["Text tweets", "Image tweets", "Retweets", "Replies"],
+    },
+    followers: {
+      title: "Twitter Followers",
+      description:
+        "Followers are users who subscribe to see your tweets in their timeline.",
+      items: ["Active followers", "Inactive followers", "Verified followers"],
+    },
+    photos: {
+      title: "Instagram Photos",
+      description: "Photos are images you share on your Instagram profile.",
+      items: ["Profile photos", "Posts", "Tagged photos"],
+    },
+    stories: {
+      title: "Instagram Stories",
+      description:
+        "Stories are temporary photos/videos that disappear after 24 hours.",
+      items: ["Photo stories", "Video stories", "Highlights"],
+    },
   };
 
-  // Bar chart data
-  const barData = {
-    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-    datasets: [
-      {
-        label: "Bar Dataset",
-        data: [12, 19, 3, 5, 2, 3],
-        backgroundColor: "rgba(75, 192, 192, 1)",
-      },
-    ],
+  // State
+  const [firstSelect, setFirstSelect] = useState("");
+  const [secondSelect, setSecondSelect] = useState("");
+
+  // Handle changes
+  const onFirstChange = (e) => {
+    setFirstSelect(e.target.value);
+    setSecondSelect(""); // Reset second select when first changes
   };
 
-  // Doughnut chart data
-  const doughnutData = {
-    labels: ["Red", "Blue", "Yellow"],
-    datasets: [
-      {
-        label: "Doughnut Dataset",
-        data: [10, 20, 30],
-        backgroundColor: [
-          "rgba(255, 99, 133, 1)",
-          "rgba(54, 163, 235, 1)",
-          "rgba(255, 207, 86, 1)",
-        ],
-      },
-    ],
+  const onSecondChange = (e) => {
+    setSecondSelect(e.target.value);
   };
 
-  // Radar chart data
-  const radarData = {
-    labels: ["Running", "Swimming", "Eating", "Cycling", "Sleeping"],
-    datasets: [
-      {
-        label: "Radar Dataset",
-        data: [20, 10, 4, 2, 8],
-        backgroundColor: "rgba(255, 99, 133, 0.31)",
-        borderColor: "rgba(255, 99, 132, 1)",
-        pointBackgroundColor: "rgba(255, 99, 132, 1)",
-      },
-    ],
-  };
+  // Get current second options & info
+  const secondOptions = secondOptionsMap[firstSelect] || [];
+  const info = infoMap[secondSelect];
 
-  const chartSize = { height: 250, width: 350 };
+  // Header style matching your gradient and style:
+  const headerStyle = {
+    background: "linear-gradient(90deg, rgb(0 150 255) 0%, rgb(0 0 0) 100%)",
+    color: "white",
+    fontWeight: "600",
+    fontSize: "1.05rem",
+    padding: "0.75rem 1rem",
+  };
 
   return (
     <div>
@@ -124,101 +104,52 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-      {/* Cards with icons left of text */}
-     <Row className="mb-4">
-  {cardData.map(({ title, count, icon }, idx) => (
-    <Col key={idx} md={3}>
-      <Card className="shadow-sm border">
-        <Card.Header
-          style={{
-            backgroundColor: "#d1d1d1", // medium grey
-            display: "flex",
-            alignItems: "center",
-            fontSize: "1.05rem",
-            fontWeight: "600",
-            gap: "0.5rem",
-          }}
-        >
-          {icon}
-          <span>{title}</span>
-        </Card.Header>
-        <Card.Body style={{ backgroundColor: "#f5f5f5" }}> {/* light grey */}
-          <div
-            style={{
-              fontSize: "1.75rem",
-              fontWeight: "bold",
-              textAlign: "center",
-              color: "#333",
-            }}
-          >
-            {count}
-          </div>
+      {/* First select */}
+      <Card className="mb-4 shadow-sm">
+        <Card.Header style={headerStyle}>Select Social Side</Card.Header>
+        <Card.Body>
+          <Form.Select value={firstSelect} onChange={onFirstChange} aria-label="Social Side select">
+            {firstOptions.map(({ value, label }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </Form.Select>
         </Card.Body>
       </Card>
-    </Col>
-  ))}
-</Row>
 
+      {/* Second select - shows only if firstSelect chosen */}
+      {firstSelect && (
+        <Card className="mb-4 shadow-sm">
+          <Card.Header style={headerStyle}>Select Category</Card.Header>
+          <Card.Body>
+            <Form.Select value={secondSelect} onChange={onSecondChange} aria-label="Category select">
+              {secondOptions.map(({ value, label }) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </Form.Select>
+          </Card.Body>
+        </Card>
+      )}
 
-      {/* Row with Line and Pie charts */}
-      <Row className="mb-4">
-        <Col md={6}>
-          <Card className="shadow-sm">
-            <Card.Header>Sales Graph</Card.Header>
-            <Card.Body style={{ height: "22.3rem" }}>
-              <Line data={lineData} height={300} width={550} />
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={3}>
-          <Card className="shadow-sm">
-            <Card.Header>Votes Pie Chart</Card.Header>
-            <Card.Body style={{ height: "359px", width: "100%" }}>
-              <Pie data={pieData} />
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={3}>
-          <Card className="shadow-sm">
-            <Card.Header>Votes Pie Chart</Card.Header>
-            <Card.Body style={{ height: "359px", width: "100%" }}>
-              <Pie data={pieData} />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
-      {/* New Row with 3 different charts */}
-      <Row>
-        <Col md={4}>
-          <Card className="shadow-sm">
-            <Card.Header>Bar Chart</Card.Header>
-            <Card.Body style={{ height: "22rem" }}>
-              <Bar data={barData} height={chartSize.height} width={chartSize.width} />
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={4}>
-          <Card className="shadow-sm">
-            <Card.Header>Doughnut Chart</Card.Header>
-            <Card.Body style={{ height: "22rem" }}>
-              <Doughnut data={doughnutData} height={chartSize.height} width={chartSize.width} />
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={4}>
-          <Card className="shadow-sm">
-            <Card.Header>Radar Chart</Card.Header>
-            <Card.Body style={{ height: "22rem" }}>
-              <Radar data={radarData} height={chartSize.height} width={chartSize.width} />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+      {/* Info div - shows only if secondSelect chosen */}
+      {info && (
+        <Card className="mb-4 shadow-sm">
+          <Card.Header style={headerStyle}>{info.title}</Card.Header>
+          <Card.Body>
+            <p>{info.description}</p>
+            <ul>
+              {info.items.map((item, idx) => (
+                <li key={idx} style={{ fontSize: "14px", marginBottom: "0.25rem" }}>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </Card.Body>
+        </Card>
+      )}
     </div>
   );
 };

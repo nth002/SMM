@@ -19,7 +19,7 @@ const Layout = () => {
       {loading && <Loader />}
       <div>
         <Navbar />
-        <div style={{ display: "flex", marginTop: "3rem", height: "calc(100vh - 56px)" }}>
+        <div style={{ display: "flex", marginTop: "2.3rem", height: "calc(100vh - 56px)" }}>
           <Sidebar />
           <div style={{ flex: 1, padding: "1rem", marginTop: "0rem", overflowY: "auto" }}>
             <Outlet />
