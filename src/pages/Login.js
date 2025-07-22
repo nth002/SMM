@@ -32,7 +32,7 @@ const Login = () => {
 
     setTimeout(() => {
       setFormSubmitting(false);
-      navigate("/placeOrder");
+      navigate("/dashboard");
     }, 2000); // simulate API delay
   };
 

@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import { Card, Row, Col, Breadcrumb, Form } from "react-bootstrap";
+import "./Dashboard.css";
+
+import addImage1 from "../assets/images/add1.webp";
+import addImage2 from "../assets/images/add2.jpg";
+import addImage4 from "../assets/images/subs.jpeg";
+import addImage5 from "../assets/images/upg.jpeg";
+
 
 const Dashboard = () => {
-  // 1st select options
   const firstOptions = [
     { value: "", label: "Select Social Side" },
     { value: "facebook", label: "Facebook" },
@@ -10,7 +16,6 @@ const Dashboard = () => {
     { value: "instagram", label: "Instagram" },
   ];
 
-  // 2nd select options depending on first select
   const secondOptionsMap = {
     facebook: [
       { value: "", label: "Select Facebook Category" },
@@ -29,18 +34,15 @@ const Dashboard = () => {
     ],
   };
 
-  // 3rd div info based on 2nd select
   const infoMap = {
     posts: {
       title: "Facebook Posts",
-      description:
-        "Posts are the content you share on Facebook that your friends and followers see.",
+      description: "Posts are the content you share on Facebook that your friends and followers see.",
       items: ["Text posts", "Image posts", "Video posts", "Event posts"],
     },
     friends: {
       title: "Facebook Friends",
-      description:
-        "Friends are people you've connected with on Facebook to share updates.",
+      description: "Friends are people you've connected with on Facebook to share updates.",
       items: ["Close friends", "Family", "Work colleagues", "Acquaintances"],
     },
     tweets: {
@@ -50,8 +52,7 @@ const Dashboard = () => {
     },
     followers: {
       title: "Twitter Followers",
-      description:
-        "Followers are users who subscribe to see your tweets in their timeline.",
+      description: "Followers are users who subscribe to see your tweets in their timeline.",
       items: ["Active followers", "Inactive followers", "Verified followers"],
     },
     photos: {
@@ -61,41 +62,28 @@ const Dashboard = () => {
     },
     stories: {
       title: "Instagram Stories",
-      description:
-        "Stories are temporary photos/videos that disappear after 24 hours.",
+      description: "Stories are temporary photos/videos that disappear after 24 hours.",
       items: ["Photo stories", "Video stories", "Highlights"],
     },
   };
 
-  // State
   const [firstSelect, setFirstSelect] = useState("");
   const [secondSelect, setSecondSelect] = useState("");
 
-  // Handle changes
   const onFirstChange = (e) => {
     setFirstSelect(e.target.value);
-    setSecondSelect(""); // Reset second select when first changes
+    setSecondSelect("");
   };
 
   const onSecondChange = (e) => {
     setSecondSelect(e.target.value);
   };
 
-  // Get current second options & info
   const secondOptions = secondOptionsMap[firstSelect] || [];
   const info = infoMap[secondSelect];
 
-  // Header style matching your gradient and style:
-  const headerStyle = {
-    background: "linear-gradient(90deg, rgb(0 150 255) 0%, rgb(0 0 0) 100%)",
-    color: "white",
-    fontWeight: "600",
-    fontSize: "1.05rem",
-    padding: "0.75rem 1rem",
-  };
-
   return (
-    <div>
+    <div className="dashboard-container p-3">
       <Row className="mb-3">
         <Col>
           <Breadcrumb>
@@ -104,52 +92,93 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-      {/* First select */}
-      <Card className="mb-4 shadow-sm">
-        <Card.Header style={headerStyle}>Select Social Side</Card.Header>
-        <Card.Body>
-          <Form.Select value={firstSelect} onChange={onFirstChange} aria-label="Social Side select">
-            {firstOptions.map(({ value, label }) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </Form.Select>
-        </Card.Body>
-      </Card>
+      <Row>
+        {/* Left Ad */}
+        <Col md={3}>
+          <Card className="ad-card mb-4">
+            <Card.Img variant="top" src={addImage1} />
+            <Card.Body>
+              <Card.Text>Special offer on analytics tools. Try now!</Card.Text>
+            </Card.Body>
+          </Card>
 
-      {/* Second select - shows only if firstSelect chosen */}
-      {firstSelect && (
-        <Card className="mb-4 shadow-sm">
-          <Card.Header style={headerStyle}>Select Category</Card.Header>
-          <Card.Body>
-            <Form.Select value={secondSelect} onChange={onSecondChange} aria-label="Category select">
-              {secondOptions.map(({ value, label }) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </Form.Select>
-          </Card.Body>
-        </Card>
-      )}
+          <Card className="rotating-ad-card">
+            <div className="ad-horizontal-content">
+              <img src={addImage5} alt="Exclusive" className="ad-horizontal-img" />
+              <div className="ad-info">
+                <p className="mb-2">Subscribe today and get 50% off.</p>
+                <button className="btn btn-sm btn-primary">More Info</button>
+              </div>
+            </div>
+          </Card>
 
-      {/* Info div - shows only if secondSelect chosen */}
-      {info && (
-        <Card className="mb-4 shadow-sm">
-          <Card.Header style={headerStyle}>{info.title}</Card.Header>
-          <Card.Body>
-            <p>{info.description}</p>
-            <ul>
-              {info.items.map((item, idx) => (
-                <li key={idx} style={{ fontSize: "14px", marginBottom: "0.25rem" }}>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </Card.Body>
-        </Card>
-      )}
+        </Col>
+
+        {/* Center Content */}
+        <Col md={6}>
+          <Card className="mb-4 shadow-sm custom-card">
+            <Card.Header className="custom-header">Select Social Side</Card.Header>
+            <Card.Body>
+              <Form.Select value={firstSelect} onChange={onFirstChange}>
+                {firstOptions.map(({ value, label }) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </Form.Select>
+            </Card.Body>
+          </Card>
+
+          {firstSelect && (
+            <Card className="mb-4 shadow-sm custom-card">
+              <Card.Header className="custom-header">Select Category</Card.Header>
+              <Card.Body>
+                <Form.Select value={secondSelect} onChange={onSecondChange}>
+                  {secondOptions.map(({ value, label }) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Card.Body>
+            </Card>
+          )}
+
+          {info && (
+            <Card className="mb-4 shadow-sm custom-card">
+              <Card.Header className="custom-header">{info.title}</Card.Header>
+              <Card.Body>
+                <p>{info.description}</p>
+                <ul className="info-list">
+                  {info.items.map((item, idx) => (
+                    <li key={idx}>{item}</li>
+                  ))}
+                </ul>
+              </Card.Body>
+            </Card>
+          )}
+        </Col>
+
+        {/* Right Ad */}
+        <Col md={3}>
+          <Card className="ad-card mb-4">
+            <Card.Img variant="top" src={addImage4} />
+            <Card.Body>
+              <Card.Text>Upgrade to Premium. Unlock powerful features!</Card.Text>
+            </Card.Body>
+          </Card>
+
+          <Card className="rotating-ad-card">
+            <div className="ad-horizontal-content">
+              <img src={addImage2} alt="Exclusive" className="ad-horizontal-img" />
+              <div className="ad-info">
+                <p className="mb-2">Subscribe today and get 50% off.</p>
+                <button className="btn btn-sm btn-primary">More Info</button>
+              </div>
+            </div>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };
