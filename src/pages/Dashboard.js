@@ -1,91 +1,126 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Card, Row, Col, Breadcrumb, Form } from "react-bootstrap";
 import "./Dashboard.css";
 
-import addImage1 from "../assets/images/add1.webp";
 import addImage2 from "../assets/images/add2.jpg";
 import addImage4 from "../assets/images/subs.jpeg";
 import addImage5 from "../assets/images/upg.jpeg";
+import walletImg from "../assets/images/e-wallet.jpg";
 
+import Swal from 'sweetalert2';
+
+const knownPlatforms = [
+  "instagram",
+  "facebook",
+  "twitter",
+  "telegram",
+  "youtube",
+  "tiktok",
+  "canva",
+  "whatsapp",
+  "website design",
+  "threads",
+  "linkedin",
+];
 
 const Dashboard = () => {
-  const firstOptions = [
-    { value: "", label: "Select Social Side" },
-    { value: "facebook", label: "Facebook" },
-    { value: "twitter", label: "Twitter" },
-    { value: "instagram", label: "Instagram" },
-  ];
-
-  const secondOptionsMap = {
-    facebook: [
-      { value: "", label: "Select Facebook Category" },
-      { value: "posts", label: "Posts" },
-      { value: "friends", label: "Friends" },
-    ],
-    twitter: [
-      { value: "", label: "Select Twitter Category" },
-      { value: "tweets", label: "Tweets" },
-      { value: "followers", label: "Followers" },
-    ],
-    instagram: [
-      { value: "", label: "Select Instagram Category" },
-      { value: "photos", label: "Photos" },
-      { value: "stories", label: "Stories" },
-    ],
-  };
-
-  const infoMap = {
-    posts: {
-      title: "Facebook Posts",
-      description: "Posts are the content you share on Facebook that your friends and followers see.",
-      items: ["Text posts", "Image posts", "Video posts", "Event posts"],
-    },
-    friends: {
-      title: "Facebook Friends",
-      description: "Friends are people you've connected with on Facebook to share updates.",
-      items: ["Close friends", "Family", "Work colleagues", "Acquaintances"],
-    },
-    tweets: {
-      title: "Twitter Tweets",
-      description: "Tweets are short messages you post on Twitter.",
-      items: ["Text tweets", "Image tweets", "Retweets", "Replies"],
-    },
-    followers: {
-      title: "Twitter Followers",
-      description: "Followers are users who subscribe to see your tweets in their timeline.",
-      items: ["Active followers", "Inactive followers", "Verified followers"],
-    },
-    photos: {
-      title: "Instagram Photos",
-      description: "Photos are images you share on your Instagram profile.",
-      items: ["Profile photos", "Posts", "Tagged photos"],
-    },
-    stories: {
-      title: "Instagram Stories",
-      description: "Stories are temporary photos/videos that disappear after 24 hours.",
-      items: ["Photo stories", "Video stories", "Highlights"],
-    },
-  };
-
   const [firstSelect, setFirstSelect] = useState("");
+  const [secondOptions, setSecondOptions] = useState([{ value: "", label: "Select Service" }]);
   const [secondSelect, setSecondSelect] = useState("");
+  const [services, setServices] = useState([]);
+  const [linkInput, setLinkInput] = useState("");
+  const [descInput, setDescInput] = useState("");
+
+  // State for balance
+  const [balance, setBalance] = useState(null);
+  const [balanceLoading, setBalanceLoading] = useState(true);
+  const [quantity, setQuantity] = useState("");
+
+  // Fetch services on firstSelect change
+  useEffect(() => {
+    if (!firstSelect) return;
+
+    axios
+      .post("http://localhost:5000/api/services")
+      .then((response) => {
+        console.log("Services from backend:", response.data);
+        const all = response.data;
+
+        setServices(all);
+
+        let filtered;
+
+        if (firstSelect.toLowerCase() === "other") {
+          filtered = all.filter((item) => {
+            const name = item.name?.toLowerCase() || "";
+            return !knownPlatforms.some((platform) => name.includes(platform));
+          });
+        } else {
+          filtered = all.filter((item) =>
+            item.name?.toLowerCase().startsWith(firstSelect.toLowerCase())
+          );
+        }
+
+        const options = filtered.map((item) => ({
+          value: item.service,
+          label: item.name,
+        }));
+
+        setSecondOptions([{ value: "", label: "Select Service" }, ...options]);
+      })
+      .catch((error) => {
+        console.error("Error fetching services:", error);
+        setSecondOptions([{ value: "", label: "Failed to load services" }]);
+      });
+  }, [firstSelect]);
+
+  // Fetch user balance on component mount
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const response = await axios.post("http://localhost:5000/api/balance");
+        if (response.data && response.data.balance !== undefined && response.data.balance !== null) {
+          setBalance(response.data.balance);
+        } else {
+          setBalance(0);
+        }
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+        setBalance(0);
+      } finally {
+        setBalanceLoading(false);
+      }
+    };
+
+    fetchBalance();
+  }, []);
 
   const onFirstChange = (e) => {
     setFirstSelect(e.target.value);
     setSecondSelect("");
+    setSecondOptions([{ value: "", label: "Loading..." }]);
+    setLinkInput("");
+    setDescInput("");
+    setQuantity("");
   };
 
   const onSecondChange = (e) => {
-    setSecondSelect(e.target.value);
+    const selected = e.target.value;
+    setSecondSelect(selected);
+    setLinkInput("");
+    setDescInput("");
+    setQuantity("");
   };
 
-  const secondOptions = secondOptionsMap[firstSelect] || [];
-  const info = infoMap[secondSelect];
+  const selectedServiceDetails = services.find(
+    (item) => String(item.service) === String(secondSelect)
+  );
 
   return (
     <div className="dashboard-container p-3">
-      <Row className="mb-3">
-        <Col>
+      <Row className="mb-3 align-items-center justify-content-between">
+        <Col xs="auto">
           <Breadcrumb>
             <Breadcrumb.Item active>Dashboard</Breadcrumb.Item>
           </Breadcrumb>
@@ -96,9 +131,15 @@ const Dashboard = () => {
         {/* Left Ad */}
         <Col md={3}>
           <Card className="ad-card mb-4">
-            <Card.Img variant="top" src={addImage1} />
+            <Card.Img variant="top" src={walletImg} />
             <Card.Body>
-              <Card.Text>Special offer on analytics tools. Try now!</Card.Text>
+              <Card.Text>Wallet balance{balanceLoading ? (
+              <div style={{ fontSize: "1.25rem", fontWeight: "bold" }}>Loading...</div>
+            ) : (
+              <div style={{ fontSize: "1.25rem", fontWeight: "bold" }}>
+                ₹ {balance !== null ? balance.toFixed(2) : "0.00"}
+              </div>
+            )}</Card.Text>
             </Card.Body>
           </Card>
 
@@ -111,27 +152,30 @@ const Dashboard = () => {
               </div>
             </div>
           </Card>
-
         </Col>
 
         {/* Center Content */}
         <Col md={6}>
+          {/* Platform Selection */}
           <Card className="mb-4 shadow-sm custom-card">
-            <Card.Header className="custom-header">Select Social Side</Card.Header>
+            <Card.Header className="custom-header">Select Platform</Card.Header>
             <Card.Body>
               <Form.Select value={firstSelect} onChange={onFirstChange}>
-                {firstOptions.map(({ value, label }) => (
-                  <option key={value} value={value}>
-                    {label}
+                <option value="">Select Platform</option>
+                {knownPlatforms.map((platform) => (
+                  <option key={platform} value={platform}>
+                    {platform.charAt(0).toUpperCase() + platform.slice(1)}
                   </option>
                 ))}
+                <option value="other">Other</option>
               </Form.Select>
             </Card.Body>
           </Card>
 
+          {/* Service Selection */}
           {firstSelect && (
             <Card className="mb-4 shadow-sm custom-card">
-              <Card.Header className="custom-header">Select Category</Card.Header>
+              <Card.Header className="custom-header">Select Service</Card.Header>
               <Card.Body>
                 <Form.Select value={secondSelect} onChange={onSecondChange}>
                   {secondOptions.map(({ value, label }) => (
@@ -144,16 +188,140 @@ const Dashboard = () => {
             </Card>
           )}
 
-          {info && (
+          {/* Details Section */}
+          {secondSelect && selectedServiceDetails && (
             <Card className="mb-4 shadow-sm custom-card">
-              <Card.Header className="custom-header">{info.title}</Card.Header>
+              <Card.Header className="custom-header">Service Details & Input</Card.Header>
               <Card.Body>
-                <p>{info.description}</p>
-                <ul className="info-list">
-                  {info.items.map((item, idx) => (
-                    <li key={idx}>{item}</li>
-                  ))}
-                </ul>
+                <p>
+                  <strong>Name:</strong> {selectedServiceDetails.name}
+                </p>
+                <p>
+                  <strong>Service ID:</strong> {selectedServiceDetails.service}
+                </p>
+                <p>
+                  <strong>Rate:</strong> ₹{selectedServiceDetails.rate}
+                </p>
+                <p>
+                  <strong>Min:</strong> {selectedServiceDetails.min}
+                </p>
+                <p>
+                  <strong>Max:</strong> {selectedServiceDetails.max}
+                </p>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Paste Link</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter link here..."
+                    value={linkInput}
+                    onChange={(e) => setLinkInput(e.target.value)}
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Description</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    placeholder="Enter description..."
+                    value={descInput}
+                    onChange={(e) => setDescInput(e.target.value)}
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Quantity</Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="Enter quantity"
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                  />
+                </Form.Group>
+                <button
+                  className="btn btn-primary"
+                  onClick={async () => {
+                    if (!secondSelect) {
+                      Swal.fire({
+                        icon: "warning",
+                        title: "Oops",
+                        text: `select a service`,
+                        confirmButtonColor: "#3085d6",
+                      })
+                      return;
+                    }
+                    if (!linkInput.trim()) {
+                      Swal.fire({
+                        icon: "warning",
+                        title: "Oops",
+                        text: `Please enter a link`,
+                        confirmButtonColor: "#3085d6",
+                      })
+                      return;
+                    }
+                    if (!quantity || isNaN(quantity) || quantity <= 0) {
+                     Swal.fire({
+                      icon: "warning",
+                      title: "Oops",
+                      text: `Please enter quantity`,
+                      confirmButtonColor: "#3085d6",
+                    })
+                      return;
+                    }
+                    console.log("jhgsfhf: ", selectedServiceDetails.service)
+                    try {
+                      const payload = {
+                        key: "72e916d44c6ae2b93154f06f7b6abc423a770318",
+                        action: "add",
+                        service: String(selectedServiceDetails.service), // Use the actual service ID here
+                        link: String(linkInput),
+                        quantity: String(quantity),
+                        comments: descInput || "",
+                        runs: "optional",    // or omit this key completely if not used
+                        interval: "optional" // or omit
+                      };
+
+                      console.log("payload : ", payload)
+
+                      const response = await axios.post("http://localhost:5000/api/place-order", payload);
+
+                      if (response.data && response.data.success) {
+                        Swal.fire({
+                          icon: "success",
+                          title: "Yay",
+                          text: "Order placed successfully",
+                          confirmButtonColor: "#3085d6",
+                        }).then(() => {
+                          setLinkInput("");
+                          setDescInput("");
+                          setQuantity("");
+                          setSecondSelect("");
+                          setSecondOptions([{ value: "", label: "Select Service" }]);
+                        });
+                        // Reset fields
+                        
+                      } else {
+                        Swal.fire({
+                          icon: "error",
+                          title: "Nope",
+                          text: response.data,
+                          confirmButtonColor: "#3085d6",
+                        })
+                      }
+                    } catch (error) {
+                      console.error("Error placing order:", error);
+                      Swal.fire({
+                          icon: "error",
+                          title: "Nope",
+                          text: "Duplicate Order",
+                          confirmButtonColor: "#3085d6",
+                        })
+                    }
+                  }}
+                >
+                  Place Order
+                </button>
               </Card.Body>
             </Card>
           )}
